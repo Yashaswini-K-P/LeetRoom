@@ -13,7 +13,10 @@ app.use("api/rooms", roomRoutes);
 
 io.on("connection", (client) => {
   console.log("A user connected:", client.id);
-  client.on("event", (data) => {});
+  client.on('join-room', (roomCode) => {
+    client.join(roomCode);
+    console.log(`User ${client.id} joined room: ${roomCode}`);
+  });
   client.on("disconnect", () => {
     console.log("A user disconnected", client.id);
   });
