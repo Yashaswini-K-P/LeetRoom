@@ -21,4 +21,8 @@
 - Added validation for room existence on join-room.
 - Handled clean disconnection tracking and real-time room participant broadcasting.
 
+## [Milestone 7] Room Creation & Participant Storage Integration - July 25, 2026
+- Connected roomState across the HTTP router and Socket.io server.
+- Stored adminProblems on room creation.
+- Captured leetcodeUsername properly when a client joins a room.
 

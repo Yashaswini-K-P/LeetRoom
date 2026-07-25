@@ -1,8 +1,14 @@
-const activeRooms = new Set();
+const { roomState } = require('../storage/roomStore.js');
 
 const createRoom = (req, res) => {
+  const { problems } = req.body;
   const roomCode = Math.random().toString(36).substring(2, 8);
-  activeRooms.add(roomCode);
+
+  roomState.set(roomCode, {
+    adminProblems: problems || [],
+    participants: new Map()
+  });
+
   res.status(201).json({
     success: true,
     roomCode: roomCode,
@@ -11,11 +17,12 @@ const createRoom = (req, res) => {
 
 const checkRoom = (req, res)=>{
   const { roomCode } = req.params;
-  const exists = activeRooms.has(roomCode);
+  const exists = roomState.has(roomCode);
   res.status(200).json({
     exists:exists
   });
 }
+
 module.exports = {
   createRoom,
   checkRoom,

@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const roomRoutes = require("./routes/roomRoutes.js");
+const { roomState } = require('./storage/roomStore.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -9,34 +10,40 @@ const io = new Server(server);
 
 app.use(express.json());
 
-app.use("api/rooms", roomRoutes);
-
-const roomParticipants = new Map();
+app.use("/api/rooms", roomRoutes);
 
 io.on("connection", (client) => {
   console.log("A user connected:", client.id);
   client.on('join-room', ({roomCode, leetcodeUsername}) => {
 
-    if(!roomParticipants.has(roomCode)){
+    if(!roomState.has(roomCode)){
       client.emit('error-message', 'Room does not exist. Please ask the admin for a valid room code.');
       return;
     }
     client.join(roomCode);
+    const room = roomState.get(roomCode);
+
+    room.participants.set(client.id, {
+      socketId: client.id, 
+      leetcodeUsername: leetcodeUsername, 
+    })
+
     console.log(`User ${client.id} joined room: ${roomCode}`);
 
-    const usersInRoom = Array.from(roomParticipants.get(roomCode).values());
+    const usersInRoom = Array.from(room.participants.values());
     io.to(roomCode).emit('room-update', usersInRoom);
   });
   client.on("disconnect", () => {
     console.log("A user disconnected", client.id);
 
-    roomParticipants.forEach((participants, roomCode)=>{
+    roomState.forEach((room, roomCode)=>{
+      const participants = room.participants;
       if(participants.has(client.id)){
         participants.delete(client.id);
-        if(participants.size()==0){
-          roomParticipants.delete(roomCode);
+        if(participants.size==0){
+          roomState.delete(roomCode);
         }else{
-          const usersInRoom = Array.from(participants.values);
+          const usersInRoom = Array.from(participants.values());
           io.to(roomCode).emit("room-update", usersInRoom);
         }
       }
