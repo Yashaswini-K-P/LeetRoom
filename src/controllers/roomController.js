@@ -1,11 +1,13 @@
 const { roomState } = require('../storage/roomStore.js');
 
 const createRoom = (req, res) => {
-  const { problems } = req.body;
+  const { problems, startTime, endTime } = req.body;
   const roomCode = Math.random().toString(36).substring(2, 8);
 
   roomState.set(roomCode, {
     adminProblems: problems || [],
+    startTime: startTime || null,
+    endTime: endTime || null,
     participants: new Map()
   });
 
