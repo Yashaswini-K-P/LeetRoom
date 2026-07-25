@@ -15,3 +15,10 @@
 ## [Milestone 4] Socket.io Room Joining - July 24, 2026
 - Configured Socket.io connection and disconnection handlers.
 - Implemented `join-room` event listener so clients can join specific room channels.
+
+## [Milestone 6] Participant Mapping & Room State - July 25, 2026
+- Implemented `roomParticipants` Map to track users by room code and socket ID.
+- Added validation for room existence on join-room.
+- Handled clean disconnection tracking and real-time room participant broadcasting.
+
+
