@@ -26,3 +26,11 @@
 - Stored adminProblems on room creation.
 - Captured leetcodeUsername properly when a client joins a room.
 
+## [Milestone 8] Contest Timing Configuration - July 25, 2026
+- Updated room creation logic to accept and store contest start and end timestamps in roomState.
+- Prepared the room structure for future time-bound submission validation during leaderboard calculation.
+
+## [Milestone 10] Contest Status and Timer Synchronization - July 25, 2026
+- Implemented getContestStatus utility to dynamically evaluate whether a contest is "upcoming", "Ongoing", or "Ended" based on current system time versus startTime and endTime.
+- Updated socket connection handler on join-room to calculate and emit the contest status along with timestamps and participants.
+

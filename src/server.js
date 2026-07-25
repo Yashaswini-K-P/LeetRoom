@@ -3,6 +3,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const roomRoutes = require("./routes/roomRoutes.js");
 const { roomState } = require('./storage/roomStore.js');
+const { getContestStatus } = require('./controllers/contest.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -30,8 +31,15 @@ io.on("connection", (client) => {
 
     console.log(`User ${client.id} joined room: ${roomCode}`);
 
+    const contestStatus = getContestStatus(room.startTime, room.endTime);
+
     const usersInRoom = Array.from(room.participants.values());
-    io.to(roomCode).emit('room-update', usersInRoom);
+    io.to(roomCode).emit('room-update', {
+      users: usersInRoom,
+      status: contestStatus,
+      startTime: room.startTime,
+      endTime: room.endTime,
+      });
   });
   client.on("disconnect", () => {
     console.log("A user disconnected", client.id);
