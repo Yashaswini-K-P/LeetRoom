@@ -54,4 +54,25 @@ const setupSocketHandlers = (io) => {
       });
     });
   });
+
+  setInterval(() => {
+    roomState.forEach((room, roomCode) => {
+      const newStatus = getContestStatus(room.startTime, room.endTime);
+
+      if (room.currentStatus != newStatus) {
+        room.currentStatus = newStatus;
+        console.log(`Room ${roomCode} status changed to: ${newStatus}`);
+        const usersInRoom = Array.from(room.participants.values());
+
+        io.to(roomCode).emit("room-update", {
+          users: usersInRoom,
+          status: newStatus,
+          startTime: room.startTime,
+          endTime: room.endTime,
+        });
+      }
+    });
+  }, 5000);
 };
+
+module.exports = { setupSocketHandlers };
