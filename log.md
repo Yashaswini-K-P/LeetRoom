@@ -9,28 +9,33 @@
 - Implemented random room code generator endpoint and hooked routes into `server.js`.
 
 ## [Milestone 3] Room Validation & In-Memory Storage - July 24, 2026
+
 - Added an in-memory `Set` (`activeRooms`) to track active room codes.
 - Implemented `checkRoom` controller and a GET route with route parameters (`/check/:roomCode`) to validate rooms before joining.
 
 ## [Milestone 4] Socket.io Room Joining - July 24, 2026
+
 - Configured Socket.io connection and disconnection handlers.
 - Implemented `join-room` event listener so clients can join specific room channels.
 
 ## [Milestone 6] Participant Mapping & Room State - July 25, 2026
+
 - Implemented `roomParticipants` Map to track users by room code and socket ID.
 - Added validation for room existence on join-room.
 - Handled clean disconnection tracking and real-time room participant broadcasting.
 
 ## [Milestone 7] Room Creation & Participant Storage Integration - July 25, 2026
+
 - Connected roomState across the HTTP router and Socket.io server.
 - Stored adminProblems on room creation.
 - Captured leetcodeUsername properly when a client joins a room.
 
 ## [Milestone 8] Contest Timing Configuration - July 25, 2026
+
 - Updated room creation logic to accept and store contest start and end timestamps in roomState.
 - Prepared the room structure for future time-bound submission validation during leaderboard calculation.
 
 ## [Milestone 10] Contest Status and Timer Synchronization - July 25, 2026
+
 - Implemented getContestStatus utility to dynamically evaluate whether a contest is "upcoming", "Ongoing", or "Ended" based on current system time versus startTime and endTime.
 - Updated socket connection handler on join-room to calculate and emit the contest status along with timestamps and participants.
-

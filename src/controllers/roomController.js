@@ -1,4 +1,4 @@
-const { roomState } = require('../storage/roomStore.js');
+const { roomState } = require("../storage/roomStore.js");
 
 const createRoom = (req, res) => {
   const { problems, startTime, endTime } = req.body;
@@ -8,7 +8,7 @@ const createRoom = (req, res) => {
     adminProblems: problems || [],
     startTime: startTime || null,
     endTime: endTime || null,
-    participants: new Map()
+    participants: new Map(),
   });
 
   res.status(201).json({
@@ -17,13 +17,13 @@ const createRoom = (req, res) => {
   });
 };
 
-const checkRoom = (req, res)=>{
+const checkRoom = (req, res) => {
   const { roomCode } = req.params;
   const exists = roomState.has(roomCode);
   res.status(200).json({
-    exists:exists
+    exists: exists,
   });
-}
+};
 
 module.exports = {
   createRoom,
