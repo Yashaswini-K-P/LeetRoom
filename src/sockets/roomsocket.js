@@ -1,5 +1,5 @@
-const { roomState } = require("./storage/roomStore.js");
-const { getContestStatus } = require("./controllers/contest.js");
+const { roomState } = require("../storage/roomStore.js");
+const { getContestStatus } = require("../controllers/contest.js");
 
 const setupSocketHandlers = (io) => {
   io.on("connection", (client) => {

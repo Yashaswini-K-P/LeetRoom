@@ -39,3 +39,14 @@
 
 - Implemented getContestStatus utility to dynamically evaluate whether a contest is "upcoming", "Ongoing", or "Ended" based on current system time versus startTime and endTime.
 - Updated socket connection handler on join-room to calculate and emit the contest status along with timestamps and participants.
+
+## [Milestone 11] Modularized Socket Handlers & Periodic Status Check - July 26, 2026
+
+- Successfully refactored socket logic into roomSocket.js.
+- Integrated a periodic setInterval loop to automatically broadcast state transitions `(upcoming -> Ongoing -> Ended)` to all participants in a room.
+
+## [Milestone 12] MongoDB Integration for Rooms - July 28, 2026
+
+-- Connected Mongoose to MongoDB Atlas before starting the Express and Socket.io server.
+-- Created the Room schema with support for roomCode, adminProblems, contest timings, status tracking, and embedded participant structures.
+--Updated roomcontroller.js to handle asynchronous room creation and validation against MongoDB.

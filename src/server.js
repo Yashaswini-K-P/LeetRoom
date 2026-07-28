@@ -1,9 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+const mongoose = require("mongoose");
 const roomRoutes = require("./routes/roomRoutes.js");
-const { roomState } = require("./storage/roomStore.js");
-const { getContestStatus } = require("./controllers/contest.js");
 const { setupSocketHandlers } = require("./sockets/roomSocket.js");
 
 const app = express();
@@ -17,6 +17,17 @@ app.use("/api/rooms", roomRoutes);
 // Initialize all socket logic from the separate file
 setupSocketHandlers(io);
 
-server.listen(5000, () => {
-  console.log("server running in port 5000");
-});
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
+
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB Atlas successfully");
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
