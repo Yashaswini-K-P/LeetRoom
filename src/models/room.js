@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const participantSchema = new mongoose.Schema({
   socketId: { type: String, required: true },
-  leetcodeUsernam: { type: String, required: true },
+  leetcodeUsername: { type: String, required: true },
 });
 
 const roomSchema = new mongoose.Schema({
