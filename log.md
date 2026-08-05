@@ -50,3 +50,9 @@
 -- Connected Mongoose to MongoDB Atlas before starting the Express and Socket.io server.
 -- Created the Room schema with support for roomCode, adminProblems, contest timings, status tracking, and embedded participant structures.
 --Updated roomcontroller.js to handle asynchronous room creation and validation against MongoDB.
+
+## [Milestone 13] Updated Socket Handlers with MongoDB Support - July 29, 2026
+-- Successfully integrated MongoDB queries and mutations into roomSocket.js.
+-- Implemented robust join-room, disconnect, and periodic status check workflows using Mongoose models.
+
+
