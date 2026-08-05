@@ -8,9 +8,9 @@ const getContestStatus = (startTime, endTime) => {
   if (now < start) {
     return "upcoming";
   } else if (now >= start && now <= end) {
-    return "Ongoing";
+    return "ongoing";
   } else {
-    return "Ended";
+    return "ended";
   }
 };
 

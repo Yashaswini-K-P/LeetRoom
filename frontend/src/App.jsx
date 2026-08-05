@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import Home from './components/Home';
-import Room from './components/Room';
+import React, { useState } from "react";
+import Home from "./components/Home";
+import Room from "./components/Room";
 
 export default function App() {
   // Tracks active room data. If null, user is on the Home screen.
@@ -14,14 +14,11 @@ export default function App() {
   return (
     <div>
       {!roomSession ? (
-        <Home 
-          onRoomCreated={handleEnterRoom} 
-          onRoomJoined={handleEnterRoom} 
-        />
+        <Home onRoomCreated={handleEnterRoom} onRoomJoined={handleEnterRoom} />
       ) : (
-        <Room 
-          roomCode={roomSession.roomCode} 
-          leetcodeUsername={roomSession.leetcodeUsername} 
+        <Room
+          roomCode={roomSession.roomCode}
+          leetcodeUsername={roomSession.leetcodeUsername}
         />
       )}
     </div>

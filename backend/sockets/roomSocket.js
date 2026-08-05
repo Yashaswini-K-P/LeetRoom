@@ -20,11 +20,18 @@ const setupSocketHandlers = (io) => {
           (p) => p.socketId === client.id,
         );
 
-        if (existingParticipantIndex === -1) {
+        const existingParticipant = room.participants.find(
+          (p) => p.leetcodeUsername === username,
+        );
+
+        if (!existingParticipant) {
           room.participants.push({
             socketId: client.id,
-            leetcodeUsername: leetcodeUsername || "Anonymous",
+            leetcodeUsername: username,
           });
+          await room.save();
+        } else {
+          existingParticipant.socketId = client.id;
           await room.save();
         }
 

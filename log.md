@@ -52,7 +52,12 @@
 --Updated roomcontroller.js to handle asynchronous room creation and validation against MongoDB.
 
 ## [Milestone 13] Updated Socket Handlers with MongoDB Support - July 29, 2026
+
 -- Successfully integrated MongoDB queries and mutations into roomSocket.js.
 -- Implemented robust join-room, disconnect, and periodic status check workflows using Mongoose models.
 
+## [Milestone 14] Frontend Initialization & Client-Side Integration - August 5, 2026
 
+-- Initialized and connected the frontend interface to the backend server.
+-- Integrated socket.io-client to handle real-time events like room-update and user joins.
+-- Built initial client views for room joining, username entry, and live status updates.
