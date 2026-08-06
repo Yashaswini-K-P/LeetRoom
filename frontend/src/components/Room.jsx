@@ -89,7 +89,12 @@ export default function Room({ roomCode, leetcodeUsername }) {
 
         {/* Live Participants List */}
         <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-          Live Participants ({participants.length})
+          {status === "upcoming"
+            ? "Waiting Participants"
+            : status === "ongoing"
+              ? "Live Participants"
+              : "Participants"}
+          ({participants.length})
         </Typography>
 
         <Paper

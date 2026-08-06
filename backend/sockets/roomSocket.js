@@ -21,13 +21,13 @@ const setupSocketHandlers = (io) => {
         );
 
         const existingParticipant = room.participants.find(
-          (p) => p.leetcodeUsername === username,
+          (p) => p.leetcodeUsername === leetcodeUsername,
         );
 
         if (!existingParticipant) {
           room.participants.push({
             socketId: client.id,
-            leetcodeUsername: username,
+            leetcodeUsername: leetcodeUsername,
           });
           await room.save();
         } else {
