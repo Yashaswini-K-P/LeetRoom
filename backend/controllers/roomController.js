@@ -44,7 +44,23 @@ const checkRoom = async (req, res) => {
   }
 };
 
+async function verifyLeetcodeUser(username) {
+  if (!username || username === "Anonymous") return false;
+  try {
+    const baseUrl = process.env.LEETCODE_API_URL;
+    const response = await fetch(`${baseUrl}/${username}`);
+    const data = await response.json();
+
+    if (data && data.errors) return false;
+    return true;
+  } catch (err) {
+    console.log("Error verifying leetcode username:", err);
+    return false;
+  }
+}
+
 module.exports = {
   createRoom,
   checkRoom,
+  verifyLeetcodeUser,
 };

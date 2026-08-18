@@ -8,8 +8,9 @@ import {
   Container,
 } from "@mui/material";
 import { BACKEND_URL } from "../config.js";
+import { socket } from "../socket.js";
 
-export default function Home({ onRoomCreated, onRoomJoined }) {
+export default function Home({ socket, onRoomCreated, onRoomJoined }) {
   const [view, setView] = useState("home");
 
   const [problems, setProblems] = useState("");
@@ -79,15 +80,10 @@ export default function Home({ onRoomCreated, onRoomJoined }) {
     }
 
     try {
-      const problemArray = problems
-        .split(",")
-        .map((p) => p.trim())
-        .filter(Boolean);
-
       const response = await fetch(`${BACKEND_URL}/api/rooms/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problems: problemArray, startTime, endTime }),
+        body: JSON.stringify({ problems: problemInputs, startTime, endTime }),
       });
       const data = await response.json();
 
@@ -102,25 +98,39 @@ export default function Home({ onRoomCreated, onRoomJoined }) {
     }
   };
 
-  const handleJoinSubmit = async (e) => {
+  const handleJoinSubmit = (e) => {
     e.preventDefault();
     setErrorMessage("");
 
-    try {
-      const response = await fetch(
-        `${BACKEND_URL}/api/rooms/check/${roomCode}`,
-      );
-      const data = await response.json();
-
-      if (data.exists) {
-        onRoomJoined({ roomCode, leetcodeUsername });
-      } else {
-        setErrorMessage("Room does not exist. Please check the code.");
-      }
-    } catch (err) {
-      console.error(err);
-      setErrorMessage("Server error while checking room.");
+    if (!leetcodeUsername.trim()) {
+      setErrorMessage("Please enter a valid LeetCode username.");
+      return;
     }
+
+    if (!roomCode.trim()) {
+      setErrorMessage("Please enter a room code.");
+      return;
+    }
+
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    socket.emit(
+      "join-room",
+      { roomCode: roomCode.trim(), leetcodeUsername: leetcodeUsername.trim() },
+      (response) => {
+        if (!response || !response.success) {
+          setErrorMessage(response?.message || "Failed to join room.");
+          return;
+        }
+
+        onRoomJoined({
+          roomCode: roomCode.trim(),
+          leetcodeUsername: leetcodeUsername.trim(),
+        });
+      },
+    );
   };
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>

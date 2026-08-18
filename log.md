@@ -61,3 +61,15 @@
 -- Initialized and connected the frontend interface to the backend server.
 -- Integrated socket.io-client to handle real-time events like room-update and user joins.
 -- Built initial client views for room joining, username entry, and live status updates.
+
+## [Milestone 16] Structured Admin Room Configuration & Slugging Logic - August 18, 2026
+
+-- Updated MongoDB schema (room.js) to support an array of structured problem objects containing titleSlug and custom points.
+-- Implemented robust input validation and formatting logic in roomController.js to normalize problem titles (lowercase + space-to-hyphen conversion) and assign point weights automatically.
+-- Enhanced frontend creation views with dynamic row generation for custom questions and point allocations.
+
+## [Milestone 17] LeetCode Username Validation & Socket Room Gateway - August 18, 2026
+
+-- Integrated automated LeetCode profile verification (verifyLeetcodeUser) into the backend socket connection handlers to ensure participants enter valid handles.
+-- Updated roomsocket.js and Home.jsx to process async socket acknowledgments and cleanly surface validation errors.
+--Secured room-entry flows against invalid user handles and non-existent room codes.

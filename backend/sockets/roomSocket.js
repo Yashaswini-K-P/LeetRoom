@@ -1,18 +1,29 @@
 const Room = require("../models/room.js");
 const { getContestStatus } = require("../controllers/contest.js");
+const { verifyLeetcodeUser } = require("../controllers/roomController.js");
 
 const setupSocketHandlers = (io) => {
   io.on("connection", (client) => {
     console.log("A user connected:", client.id);
-    client.on("join-room", async ({ roomCode, leetcodeUsername }) => {
+    client.on("join-room", async ({ roomCode, leetcodeUsername }, callback) => {
+      const safeCallback = typeof callback === "function" ? callback : () => {};
       try {
+        const username = leetcodeUsername ? leetcodeUsername.trim() : "";
+        const isValidUser = await verifyLeetcodeUser(username);
+
+        if (!isValidUser) {
+          return safeCallback({
+            success: false,
+            message: "Invalid Leetcode Username!",
+          });
+        }
         const room = await Room.findOne({ roomCode });
         if (!room) {
-          client.emit(
-            "error-message",
-            "Room does not exist. Please ask the admin for a valid room code.",
-          );
-          return;
+          return safeCallback({
+            success: false,
+            message:
+              "Room does not exist. Please ask the admin for a valid room code.",
+          });
         }
         client.join(roomCode);
 
@@ -46,9 +57,10 @@ const setupSocketHandlers = (io) => {
           startTime: room.startTime,
           endTime: room.endTime,
         });
+        safeCallbackcallback({ success: true });
       } catch (err) {
         console.error("Error joining room via socket:", err);
-        client.emit("error-message", "Server error while joining room.");
+        safeCallback({ success: false, message: "Server error" });
       }
     });
     client.on("disconnect", async () => {
