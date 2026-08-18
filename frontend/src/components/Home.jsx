@@ -20,9 +20,63 @@ export default function Home({ onRoomCreated, onRoomJoined }) {
   const [roomCode, setRoomCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [numQuestions, setNumQuestions] = useState(1);
+  const [problemInputs, setProblemInputs] = useState([
+    { name: "", points: 10 },
+  ]);
+
+  const handleNumQuestionsChange = (val) => {
+    if (val === "") {
+      setNumQuestions("");
+      setProblemInputs([]);
+      return;
+    }
+    const parsed = parseInt(val, 10);
+    if (isNaN(parsed)) return;
+
+    const count = Math.min(Math.max(1, parsed), 10);
+    setNumQuestions(count);
+    setProblemInputs((prev) => {
+      const updated = [...prev];
+      if (count > updated.length) {
+        for (let i = updated.length; i < count; i++) {
+          updated.push({ name: "", points: 10 });
+        }
+      } else {
+        updated.length = count;
+      }
+      return updated;
+    });
+  };
+
+  const handleProblemFieldChange = (index, field, value) => {
+    const updated = [...problemInputs];
+    updated[index][field] = value;
+    setProblemInputs(updated);
+  };
+
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
+
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+
+    if (end <= start) {
+      alert("Error: End time must be later than the start time");
+      return;
+    }
+    if (!numQuestions || numQuestions < 1) {
+      setErrorMessage("Please enter a valid number of questions.");
+      return;
+    }
+
+    for (let i = 0; i < problemInputs.length; i++) {
+      if (!problemInputs[i].name.trim()) {
+        setErrorMessage(`Please enter the name for Problem ${i + 1}.`);
+        return;
+      }
+    }
 
     try {
       const problemArray = problems
@@ -135,14 +189,38 @@ export default function Home({ onRoomCreated, onRoomJoined }) {
             />
 
             <TextField
-              label="Problems (comma-separated)"
-              variant="outlined"
+              label="Number of Questions"
+              type="number"
               fullWidth
               required
-              value={problems}
-              onChange={(e) => setProblems(e.target.value)}
-              placeholder="e.g. two-sum, valid-parentheses"
+              value={numQuestions}
+              onChange={(e) => handleNumQuestionsChange(e.target.value)}
+              inputProps={{ min: 1, max: 10 }}
             />
+
+            {problemInputs.map((prob, index) => (
+              <Box key={index} sx={{ display: "flex", gap: 2 }}>
+                <TextField
+                  label={`Problem ${index + 1} Name (e.g. Two Sum)`}
+                  fullWidth
+                  required
+                  value={prob.name}
+                  onChange={(e) =>
+                    handleProblemFieldChange(index, "name", e.target.value)
+                  }
+                />
+                <TextField
+                  label="Points"
+                  type="number"
+                  sx={{ width: "120px" }}
+                  required
+                  value={prob.points}
+                  onChange={(e) =>
+                    handleProblemFieldChange(index, "points", e.target.value)
+                  }
+                />
+              </Box>
+            ))}
 
             <TextField
               label="Start Time"

@@ -5,9 +5,14 @@ const createRoom = async (req, res) => {
     const { problems, startTime, endTime } = req.body;
     const roomCode = Math.random().toString(36).substring(2, 8);
 
+    const formattedProblems = (problems || []).map((p) => ({
+      titleSlug: p.name.trim().toLowerCase().replace(/\s+/g, "-"),
+      points: Number(p.points) || 10,
+    }));
+
     const newRoom = await Room.create({
       roomCode,
-      problems: problems || [],
+      adminProblems: formattedProblems,
       startTime,
       endTime,
       currentStatus: "upcoming",

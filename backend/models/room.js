@@ -5,6 +5,11 @@ const participantSchema = new mongoose.Schema({
   leetcodeUsername: { type: String, required: true },
 });
 
+const problemSchema = new mongoose.Schema({
+  titleSlug: { type: String, required: true },
+  points: { type: Number, required: true, default: 10 },
+});
+
 const roomSchema = new mongoose.Schema({
   roomCode: { type: String, required: true, unique: true },
   adminProblems: { type: [String], default: [] },
