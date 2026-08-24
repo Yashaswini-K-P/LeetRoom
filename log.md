@@ -73,3 +73,15 @@
 -- Integrated automated LeetCode profile verification (verifyLeetcodeUser) into the backend socket connection handlers to ensure participants enter valid handles.
 -- Updated roomsocket.js and Home.jsx to process async socket acknowledgments and cleanly surface validation errors.
 --Secured room-entry flows against invalid user handles and non-existent room codes.
+
+## [Milestone 18] In-Memory Contest State & Room Manager Service - August 19, 2026
+
+-- Implemented roommanager.js service to manage active contests in server RAM using high-performance JavaScript Map structures.
+-- Added initialization logic (initializeContest) to seed participant trackers with usernames, zero scores, problem tracking maps, and tie-breaker timestamps.
+-- Created robust lifecycle handlers (getContestState and removeContestState) to safely clean up background intervals and free memory when contests conclude.
+
+## [Milestone 19] Contest Polling & Leaderboard Broadcasting Engine - August 24, 2026
+
+-- Implemented contestPoller.js featuring rate-limited user submission fetching (fetchUserSubmissions).
+-- Created automated interval loops to evaluate contest windows, check problem slug/timestamp validity, calculate custom points, and track tie-breakers.
+-- Added live leaderboard sorting and broadcasting via Socket.io (leaderboard-update), along with grace-period handling, MongoDB final persistence, and clean memory teardown (finalizeContest).
