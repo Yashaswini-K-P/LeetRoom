@@ -85,3 +85,8 @@
 -- Implemented contestPoller.js featuring rate-limited user submission fetching (fetchUserSubmissions).
 -- Created automated interval loops to evaluate contest windows, check problem slug/timestamp validity, calculate custom points, and track tie-breakers.
 -- Added live leaderboard sorting and broadcasting via Socket.io (leaderboard-update), along with grace-period handling, MongoDB final persistence, and clean memory teardown (finalizeContest).
+
+## [Milestone 20] Enhanced Room Mongoose Schema with Persistent Participant Tracking - August 25, 2026
+
+-- Updated models/room.js to include detailed participant schemas supporting persistent score tracking, tie-breaker timestamps, and Mongoose Map fields for solved problems.
+-- Added structured sub-documents (solvedProblemSchema) to maintain submission metadata (titleSlug, submissionId, timestamp) cleanly in MongoDB upon contest finalization.

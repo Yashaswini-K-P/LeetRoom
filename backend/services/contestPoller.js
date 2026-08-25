@@ -6,6 +6,7 @@ async function fetchUserSubmissions(username) {
     const response = await fetch(
       `${process.env.LEETCODE_API_URL}/${username}/acSubmission?limit=10`,
     );
+    console.log(response);
     const text = await response.text();
 
     if (

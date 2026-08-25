@@ -57,7 +57,7 @@ const setupSocketHandlers = (io) => {
           startTime: room.startTime,
           endTime: room.endTime,
         });
-        safeCallbackcallback({ success: true });
+        safeCallback({ success: true });
       } catch (err) {
         console.error("Error joining room via socket:", err);
         safeCallback({ success: false, message: "Server error" });
