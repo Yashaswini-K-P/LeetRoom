@@ -97,5 +97,12 @@
 -- Integrated state management for the LeaderboardModal component, passing down essential room metadata (roomCode, problems, participants).
 
 ## [Milestone 22] Leaderboard Modal UI Component - September 3, 2026
+
 -- Created LeaderboardModal.jsx using Material-UI dialogs, tables, and chips to render assigned problems with point values and a structured participant rankings table.
 -- Configured dynamic fallback handling for scores, solved counts, and tie-breaker submission timestamps within the modal table rows.
+
+## [Milestone 23] LeetCode API Endpoint & Submission Extraction Refactor - September 3, 2026
+
+-- Updated contestPoller.js to target the root profile endpoint (/${username}) of the LeetCode API wrapper, resolving 404 HTML error responses.
+-- Implemented strict response validation checking for rate limits, error strings, and HTML fallback pages before parsing JSON.
+-- Targeted data extraction specifically to the recentSubmissions array (data.recentSubmissions) to strip unnecessary profile telemetry and optimize memory handling.

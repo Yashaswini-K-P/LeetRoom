@@ -43,7 +43,7 @@ export default function Room({ roomCode, leetcodeUsername }) {
       console.log("Received live leaderboard update:", leaderboardData);
       setParticipants(leaderboardData);
     });
-    
+
     socket.on("error-message", (msg) => {
       setErrorMessage(msg);
     });

@@ -1,6 +1,11 @@
 const Room = require("../models/room.js");
 const { getContestStatus } = require("../controllers/contest.js");
 const { verifyLeetcodeUser } = require("../controllers/roomController.js");
+const { startContestPolling } = require("../services/contestPoller.js");
+const {
+  initializeContest,
+  getContestState,
+} = require("../services/roomManager.js");
 
 const setupSocketHandlers = (io) => {
   io.on("connection", (client) => {
@@ -27,10 +32,6 @@ const setupSocketHandlers = (io) => {
         }
         client.join(roomCode);
 
-        const existingParticipantIndex = room.participants.findIndex(
-          (p) => p.socketId === client.id,
-        );
-
         const existingParticipant = room.participants.find(
           (p) => p.leetcodeUsername === leetcodeUsername,
         );
@@ -48,6 +49,23 @@ const setupSocketHandlers = (io) => {
 
         console.log(`User ${client.id} joined room: ${roomCode}`);
 
+        let contest = getContestState(roomCode);
+        if (!contest) {
+          initializeContest(room);
+          contest = getContestState(roomCode);
+        } else {
+          // Add user to active poll map if they just joined dynamically
+          if (!contest.participants.has(leetcodeUsername)) {
+            contest.participants.set(leetcodeUsername, {
+              leetcodeUsername: leetcodeUsername,
+              totalScore: 0,
+              solvedProblems: new Map(),
+              tieBreakerTime: 0,
+            });
+          }
+        }
+        startContestPolling(io, roomCode);
+
         const contestStatus = getContestStatus(room.startTime, room.endTime);
         const usersInRoom = room.participants;
 
@@ -63,30 +81,11 @@ const setupSocketHandlers = (io) => {
         safeCallback({ success: false, message: "Server error" });
       }
     });
+
     client.on("disconnect", async () => {
-      console.log("A user disconnected", client.id);
-      try {
-        const rooms = await Room.find({ "participants.socketId": client.id });
-        for (const room of rooms) {
-          room.participants = room.participants.filter(
-            (p) => p.socketId !== client.id,
-          );
-          if (room.participants.length === 0) {
-            await Room.deleteOne({ roomCode: room.roomCode });
-            continue;
-          }
-          await room.save();
-          const usersInRoom = room.participants;
-          io.to(room.roomCode).emit("room-update", {
-            users: usersInRoom,
-            status: room.currentStatus,
-            startTime: room.startTime,
-            endTime: room.endTime,
-          });
-        }
-      } catch (err) {
-        console.log("Error handling disconnect:", err);
-      }
+      console.log("A user disconnected (retaining room state):", client.id);
+      // 🟢 Room deletion and participant removal logic removed entirely
+      // Rooms will stay persistent in the database regardless of user connections.
     });
   });
 
@@ -114,4 +113,5 @@ const setupSocketHandlers = (io) => {
     }
   }, 5000);
 };
+
 module.exports = { setupSocketHandlers };

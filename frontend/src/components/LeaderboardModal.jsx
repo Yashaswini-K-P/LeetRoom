@@ -95,7 +95,9 @@ export default function LeaderboardModal({
               <TableRow>
                 <TableCell sx={{ fontWeight: "bold" }}>Rank</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Username</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Last Submitted</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>
+                  Last Submitted
+                </TableCell>
                 <TableCell align="center" sx={{ fontWeight: "bold" }}>
                   Solved
                 </TableCell>

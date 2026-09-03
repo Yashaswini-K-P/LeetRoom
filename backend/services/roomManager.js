@@ -1,6 +1,6 @@
 const activeContests = new Map();
 
-export const initializeContest = (room) => {
+const initializeContest = (room) => {
   const participantsMap = new Map();
 
   room.participants.forEach((p) => {
@@ -21,12 +21,18 @@ export const initializeContest = (room) => {
   });
 };
 
-export const getContestState = (roomCode) => activeContests.get(roomCode);
+const getContestState = (roomCode) => activeContests.get(roomCode);
 
-export const removeContestState = (roomCode) => {
+const removeContestState = (roomCode) => {
   const contest = activeContests.get(roomCode);
   if (contest && contest.intervalId) {
     clearInterval(contest.intervalId);
   }
   activeContests.delete(roomCode);
+};
+
+module.exports = {
+  initializeContest,
+  getContestState,
+  removeContestState,
 };

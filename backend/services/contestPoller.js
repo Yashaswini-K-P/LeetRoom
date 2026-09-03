@@ -1,12 +1,9 @@
-import { getContestState, removeContestState } from "./roomManager.js";
-import Room from "../models/room.js";
+const { getContestState, removeContestState } = require("./roomManager.js");
+const Room = require("../models/room.js");
 
 async function fetchUserSubmissions(username) {
   try {
-    const response = await fetch(
-      `${process.env.LEETCODE_API_URL}/${username}/acSubmission?limit=10`,
-    );
-    console.log(response);
+    const response = await fetch(`${process.env.LEETCODE_API_URL}/${username}`);
     const text = await response.text();
 
     if (
@@ -17,17 +14,25 @@ async function fetchUserSubmissions(username) {
       return [];
     }
     const data = JSON.parse(text);
-    return Array.isArray(data) ? data : data.submission || [];
+    return Array.isArray(data) ? data : data.recentSubmissions || [];
   } catch (err) {
     console.log(`Failed fetching submissions for ${username}:`, err.message);
     return [];
   }
 }
 
-export function startContestPolling(io, roomCode) {
+function startContestPolling(io, roomCode) {
   const contest = getContestState(roomCode);
   if (!contest) return;
 
+  if (contest.intervalId) {
+    console.log(`Polling is already running for room: ${roomCode}`);
+    return;
+  }
+
+  console.log(
+    `🚀 Polling function initialized and starting for room: ${roomCode}`,
+  );
   const INTERVAL_TIME = 5 * 60 * 1000;
 
   contest.intervalId = setInterval(async () => {
@@ -65,8 +70,9 @@ export function startContestPolling(io, roomCode) {
                 });
                 userData.totalScore += matchedProblem.points;
 
+                // 🟢 Fixed typo: subTimeStamp instead of subTimestamp
                 if (subTimeStamp > userData.tieBreakerTime) {
-                  userData.tieBreakerTime = subTimestamp;
+                  userData.tieBreakerTime = subTimeStamp;
                 }
               }
             }
@@ -102,6 +108,7 @@ function broadcastLeaderboard(io, roomCode) {
 
   io.to(roomCode).emit("leaderboard-update", leaderboard);
 }
+
 async function finalizeContest(io, roomCode) {
   const contest = getContestState(roomCode);
   if (!contest) return;
@@ -130,3 +137,5 @@ async function finalizeContest(io, roomCode) {
   io.to(roomCode).emit("contest-ended", { leaderboard: finalLeaderboard });
   removeContestState(roomCode);
 }
+
+module.exports = { startContestPolling };
