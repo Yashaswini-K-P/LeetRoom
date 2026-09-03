@@ -88,7 +88,7 @@ function broadcastLeaderboard(io, roomCode) {
   const leaderboard = Array.from(contest.participants.values()).map((p) => ({
     leetcodeUsername: p.leetcodeUsername,
     totalScore: p.totalScore,
-    tieBreakerTime: p.tieBreakerTime,
+    lastSubmitted: p.tieBreakerTime,
     solvedCount: p.solvedProblems.size,
     solvedSlugs: Array.from(p.solvedProblems.keys()),
   }));
@@ -97,7 +97,7 @@ function broadcastLeaderboard(io, roomCode) {
     if (b.totalScore !== a.totalScore) {
       return b.totalScore - a.totalScore;
     }
-    return a.tieBreakerTime - b.tieBreakerTime;
+    return a.lastSubmitted - b.lastSubmitted;
   });
 
   io.to(roomCode).emit("leaderboard-update", leaderboard);

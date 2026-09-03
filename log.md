@@ -95,3 +95,7 @@
 
 -- Updated Room.jsx to conditionally display the "View Leaderboard" action button based on contest status (ongoing or ended).
 -- Integrated state management for the LeaderboardModal component, passing down essential room metadata (roomCode, problems, participants).
+
+## [Milestone 22] Leaderboard Modal UI Component - September 3, 2026
+-- Created LeaderboardModal.jsx using Material-UI dialogs, tables, and chips to render assigned problems with point values and a structured participant rankings table.
+-- Configured dynamic fallback handling for scores, solved counts, and tie-breaker submission timestamps within the modal table rows.

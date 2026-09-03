@@ -39,6 +39,11 @@ export default function Room({ roomCode, leetcodeUsername }) {
       if (data.problems) setProblems(data.problems);
     });
 
+    socket.on("leaderboard-update", (leaderboardData) => {
+      console.log("Received live leaderboard update:", leaderboardData);
+      setParticipants(leaderboardData);
+    });
+    
     socket.on("error-message", (msg) => {
       setErrorMessage(msg);
     });
