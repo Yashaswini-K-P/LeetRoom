@@ -90,3 +90,8 @@
 
 -- Updated models/room.js to include detailed participant schemas supporting persistent score tracking, tie-breaker timestamps, and Mongoose Map fields for solved problems.
 -- Added structured sub-documents (solvedProblemSchema) to maintain submission metadata (titleSlug, submissionId, timestamp) cleanly in MongoDB upon contest finalization.
+
+## [Milestone 21] Frontend Room View & Leaderboard Button Integration - September 3, 2026
+
+-- Updated Room.jsx to conditionally display the "View Leaderboard" action button based on contest status (ongoing or ended).
+-- Integrated state management for the LeaderboardModal component, passing down essential room metadata (roomCode, problems, participants).

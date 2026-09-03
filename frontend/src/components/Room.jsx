@@ -8,15 +8,19 @@ import {
   ListItem,
   ListItemText,
   Chip,
+  Button,
 } from "@mui/material";
 import { socket } from "../socket.js";
+import LeaderboardModal from "./LeaderboardModal.jsx";
 
 export default function Room({ roomCode, leetcodeUsername }) {
   const [status, setStatus] = useState("Loading...");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [participants, setParticipants] = useState([]);
+  const [problems, setProblems] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   useEffect(() => {
     const onConnect = () => {
@@ -32,6 +36,7 @@ export default function Room({ roomCode, leetcodeUsername }) {
       if (data.startTime) setStartTime(data.startTime);
       if (data.endTime) setEndTime(data.endTime);
       if (data.users) setParticipants(data.users);
+      if (data.problems) setProblems(data.problems);
     });
 
     socket.on("error-message", (msg) => {
@@ -47,6 +52,8 @@ export default function Room({ roomCode, leetcodeUsername }) {
       socket.disconnect();
     };
   }, [roomCode, leetcodeUsername]);
+
+  const canViewLeaderboard = status === "ongoing" || status === "ended";
   return (
     <Container maxWidth="md" sx={{ mt: 6 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
@@ -87,6 +94,18 @@ export default function Room({ roomCode, leetcodeUsername }) {
           </Typography>
         </Box>
 
+        {canViewLeaderboard && (
+          <Button
+            variant="contained"
+            color="secondary"
+            fullWidth
+            sx={{ mb: 3, py: 1.5, fontWeight: "bold" }}
+            onClick={() => setShowLeaderboard(true)}
+          >
+            View Leaderboard
+          </Button>
+        )}
+
         {/* Live Participants List */}
         <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
           {status === "upcoming"
@@ -113,6 +132,14 @@ export default function Room({ roomCode, leetcodeUsername }) {
           </List>
         </Paper>
       </Paper>
+
+      <LeaderboardModal
+        open={showLeaderboard}
+        onClose={() => setShowLeaderboard(false)}
+        roomCode={roomCode}
+        problems={problems}
+        participants={participants}
+      />
     </Container>
   );
 }
