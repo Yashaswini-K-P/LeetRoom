@@ -70,8 +70,6 @@ const setupSocketHandlers = (io) => {
         }
         const contestStatus = getContestStatus(room.startTime, room.endTime);
         const usersInRoom = room.participants;
-        console.log("DB Room Data:", room);
-        console.log("Emitting problems:", room.adminProblems);
         io.to(roomCode).emit("room-update", {
           users: usersInRoom,
           status: contestStatus,

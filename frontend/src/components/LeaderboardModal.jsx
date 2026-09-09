@@ -40,7 +40,6 @@ export default function Leaderboard() {
     socket.on("connect", onConnect);
 
     socket.on("room-update", (data) => {
-      console.log("Received room-update data from server:", data);
       if (data.problems) setProblems(data.problems);
       if (data.users) setParticipants(data.users);
     });
@@ -60,8 +59,6 @@ export default function Leaderboard() {
       socket.off("error-message");
     };
   }, [roomCode, leetcodeUsername]);
-  console.log("Current React state - Problems:", problems);
-  console.log("Current React state - Participants:", participants);
   return (
     <Box
       sx={{
