@@ -13,15 +13,6 @@ const setupSocketHandlers = (io) => {
     client.on("join-room", async ({ roomCode, leetcodeUsername }, callback) => {
       const safeCallback = typeof callback === "function" ? callback : () => {};
       try {
-        const username = leetcodeUsername ? leetcodeUsername.trim() : "";
-        const isValidUser = await verifyLeetcodeUser(username);
-
-        if (!isValidUser) {
-          return safeCallback({
-            success: false,
-            message: "Invalid Leetcode Username!",
-          });
-        }
         const room = await Room.findOne({ roomCode });
         if (!room) {
           return safeCallback({
@@ -31,49 +22,62 @@ const setupSocketHandlers = (io) => {
           });
         }
         client.join(roomCode);
+        const username = leetcodeUsername ? leetcodeUsername.trim() : "";
+        const isViewer = !username || username === "Viewer";
 
-        const existingParticipant = room.participants.find(
-          (p) => p.leetcodeUsername === leetcodeUsername,
-        );
-
-        if (!existingParticipant) {
-          room.participants.push({
-            socketId: client.id,
-            leetcodeUsername: leetcodeUsername,
-          });
-          await room.save();
-        } else {
-          existingParticipant.socketId = client.id;
-          await room.save();
-        }
-
-        console.log(`User ${client.id} joined room: ${roomCode}`);
-
-        let contest = getContestState(roomCode);
-        if (!contest) {
-          initializeContest(room);
-          contest = getContestState(roomCode);
-        } else {
-          // Add user to active poll map if they just joined dynamically
-          if (!contest.participants.has(leetcodeUsername)) {
-            contest.participants.set(leetcodeUsername, {
-              leetcodeUsername: leetcodeUsername,
-              totalScore: 0,
-              solvedProblems: new Map(),
-              tieBreakerTime: 0,
+        if (!isViewer) {
+          const isValidUser = await verifyLeetcodeUser(username);
+          if (!isValidUser) {
+            return safeCallback({
+              success: false,
+              message: "Invalid Leetcode Username!",
             });
           }
-        }
-        startContestPolling(io, roomCode);
 
+          const existingParticipant = room.participants.find(
+            (p) => p.leetcodeUsername === leetcodeUsername,
+          );
+
+          if (!existingParticipant) {
+            room.participants.push({
+              socketId: client.id,
+              leetcodeUsername: leetcodeUsername,
+            });
+            await room.save();
+          } else {
+            existingParticipant.socketId = client.id;
+            await room.save();
+          }
+
+          console.log(`User ${client.id} joined room: ${roomCode}`);
+
+          let contest = getContestState(roomCode);
+          if (!contest) {
+            initializeContest(room);
+            contest = getContestState(roomCode);
+          } else {
+            // Add user to active poll map if they just joined dynamically
+            if (!contest.participants.has(leetcodeUsername)) {
+              contest.participants.set(leetcodeUsername, {
+                leetcodeUsername: leetcodeUsername,
+                totalScore: 0,
+                solvedProblems: new Map(),
+                tieBreakerTime: 0,
+              });
+            }
+          }
+          startContestPolling(io, roomCode);
+        }
         const contestStatus = getContestStatus(room.startTime, room.endTime);
         const usersInRoom = room.participants;
-
+        console.log("DB Room Data:", room);
+        console.log("Emitting problems:", room.adminProblems);
         io.to(roomCode).emit("room-update", {
           users: usersInRoom,
           status: contestStatus,
           startTime: room.startTime,
           endTime: room.endTime,
+          problems: room.adminProblems,
         });
         safeCallback({ success: true });
       } catch (err) {
@@ -105,6 +109,7 @@ const setupSocketHandlers = (io) => {
             status: newStatus,
             startTime: room.startTime,
             endTime: room.endTime,
+            problems: room.adminProblems,
           });
         }
       }

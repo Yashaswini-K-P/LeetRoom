@@ -122,3 +122,8 @@
 -- Migrated the leaderboard from a popup modal component (LeaderboardModal) to a standalone page with a dedicated URL route (/room/:roomCode/leaderboard).
 -- Standardized the leaderboard interface to inherit the polished, dark-mode aesthetic applied to the rest of the application, ensuring seamless visual continuity.
 -- Enabled deep linking and native browser history traversal for the leaderboard, allowing users to navigate between the contest room and rankings naturally.
+
+## [Milestone 27] Assigned Problems Integration in Leaderboard Route - September 9, 2026
+
+-- Updated the dedicated leaderboard page to fetch and display the room's assigned problem metadata alongside their individual point values.
+-- Enhanced the rankings view layout to give participants immediate visibility into problem weights and scoring breakdowns directly on the leaderboard route.
