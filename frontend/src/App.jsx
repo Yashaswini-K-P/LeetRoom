@@ -1,31 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
+import CreateRoom from "./components/CreateRoom";
+import JoinRoom from "./components/joinRoom.jsx";
 import Room from "./components/Room";
 import { socket } from "./socket.js";
 
 export default function App() {
-  // Tracks active room data. If null, user is on the Home screen.
-  const [roomSession, setRoomSession] = useState(null);
-
-  // Called when a room is successfully created or joined
-  const handleEnterRoom = ({ roomCode, leetcodeUsername }) => {
-    setRoomSession({ roomCode, leetcodeUsername });
-  };
-
   return (
-    <div>
-      {!roomSession ? (
-        <Home
-          socket={socket}
-          onRoomCreated={handleEnterRoom}
-          onRoomJoined={handleEnterRoom}
-        />
-      ) : (
-        <Room
-          roomCode={roomSession.roomCode}
-          leetcodeUsername={roomSession.leetcodeUsername}
-        />
-      )}
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/create" element={<CreateRoom />} />
+      <Route path="/join" element={<JoinRoom />} />
+      <Route path="/room/:roomCode" element={<Room socket={socket} />} />
+    </Routes>
   );
 }

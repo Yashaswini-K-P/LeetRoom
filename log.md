@@ -106,3 +106,11 @@
 -- Updated contestPoller.js to target the root profile endpoint (/${username}) of the LeetCode API wrapper, resolving 404 HTML error responses.
 -- Implemented strict response validation checking for rate limits, error strings, and HTML fallback pages before parsing JSON.
 -- Targeted data extraction specifically to the recentSubmissions array (data.recentSubmissions) to strip unnecessary profile telemetry and optimize memory handling.
+
+## [Milestone 24] Dark Mode UI Styling & Comprehensive README Documentation - September 8, 2026
+-- Revamped the frontend UI across all primary components (Home.jsx, Room.jsx, etc.) with a cohesive, sleek dark-mode aesthetic featuring refined color palettes, gradients, and polished card styling (excluding the leaderboard modal).
+-- Created a comprehensive README.md documenting the full-stack architecture, Socket.io event flows, MERN schema design, and the in-memory polling/grace-period leaderboard system.
+
+## [Milestone 25] React Router Migration & Browser History Support - September 9, 2026
+-- Refactored the frontend architecture from internal view state switches to react-router-dom, establishing clean declarative routes for home, room creation, joining, and active room dashboards.
+-- Integrated useNavigate and <BrowserRouter> to hook into native browser history, enabling seamless back-and-forth arrow navigation between views.

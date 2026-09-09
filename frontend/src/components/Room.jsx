@@ -11,9 +11,13 @@ import {
   Button,
 } from "@mui/material";
 import { socket } from "../socket.js";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import LeaderboardModal from "./LeaderboardModal.jsx";
 
-export default function Room({ roomCode, leetcodeUsername }) {
+export default function Room() {
+  const { roomCode } = useParams();
+  const location = useLocation();
+  const leetcodeUsername = location.state?.leetcodeUsername || "";
   const [status, setStatus] = useState("Loading...");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
