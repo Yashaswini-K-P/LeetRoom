@@ -12,11 +12,11 @@ import {
 } from "@mui/material";
 import { socket } from "../socket.js";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import LeaderboardModal from "./LeaderboardModal.jsx";
 
 export default function Room() {
   const { roomCode } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const leetcodeUsername = location.state?.leetcodeUsername || "";
   const [status, setStatus] = useState("Loading...");
   const [startTime, setStartTime] = useState("");
@@ -24,7 +24,6 @@ export default function Room() {
   const [participants, setParticipants] = useState([]);
   const [problems, setProblems] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   useEffect(() => {
     const onConnect = () => {
@@ -57,6 +56,7 @@ export default function Room() {
     return () => {
       socket.off("connect", onConnect);
       socket.off("room-update");
+      socket.off("leaderboard-update");
       socket.off("error-message");
       socket.disconnect();
     };
@@ -170,7 +170,6 @@ export default function Room() {
             </Typography>
           )}
 
-          {/* Contest Status & Details */}
           <Box sx={{ my: 3, display: "flex", gap: 2, alignItems: "center" }}>
             <Typography
               variant="h6"
@@ -243,13 +242,12 @@ export default function Room() {
                     "linear-gradient(45deg, #a855f7 30%, #db2777 90%)",
                 },
               }}
-              onClick={() => setShowLeaderboard(true)}
+              onClick={() => navigate(`/room/${roomCode}/leaderboard`)}
             >
               View Leaderboard
             </Button>
           )}
 
-          {/* Live Participants List */}
           <Typography
             variant="h6"
             sx={{
@@ -307,14 +305,6 @@ export default function Room() {
             </List>
           </Paper>
         </Paper>
-
-        <LeaderboardModal
-          open={showLeaderboard}
-          onClose={() => setShowLeaderboard(false)}
-          roomCode={roomCode}
-          problems={problems}
-          participants={participants}
-        />
       </Container>
     </Box>
   );

@@ -41,7 +41,7 @@ export default function JoinRoom() {
         navigate(`/room/${roomCode.trim()}`, {
           state: { leetcodeUsername: leetcodeUsername.trim() },
         });
-      }
+      },
     );
   };
 

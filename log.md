@@ -108,9 +108,17 @@
 -- Targeted data extraction specifically to the recentSubmissions array (data.recentSubmissions) to strip unnecessary profile telemetry and optimize memory handling.
 
 ## [Milestone 24] Dark Mode UI Styling & Comprehensive README Documentation - September 8, 2026
+
 -- Revamped the frontend UI across all primary components (Home.jsx, Room.jsx, etc.) with a cohesive, sleek dark-mode aesthetic featuring refined color palettes, gradients, and polished card styling (excluding the leaderboard modal).
 -- Created a comprehensive README.md documenting the full-stack architecture, Socket.io event flows, MERN schema design, and the in-memory polling/grace-period leaderboard system.
 
 ## [Milestone 25] React Router Migration & Browser History Support - September 9, 2026
+
 -- Refactored the frontend architecture from internal view state switches to react-router-dom, establishing clean declarative routes for home, room creation, joining, and active room dashboards.
 -- Integrated useNavigate and <BrowserRouter> to hook into native browser history, enabling seamless back-and-forth arrow navigation between views.
+
+## [Milestone 26] Dedicated Leaderboard Route & UI Standardization - September 9, 2026
+
+-- Migrated the leaderboard from a popup modal component (LeaderboardModal) to a standalone page with a dedicated URL route (/room/:roomCode/leaderboard).
+-- Standardized the leaderboard interface to inherit the polished, dark-mode aesthetic applied to the rest of the application, ensuring seamless visual continuity.
+-- Enabled deep linking and native browser history traversal for the leaderboard, allowing users to navigate between the contest room and rankings naturally.
