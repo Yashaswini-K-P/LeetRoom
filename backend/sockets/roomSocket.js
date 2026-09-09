@@ -68,10 +68,25 @@ const setupSocketHandlers = (io) => {
           }
           startContestPolling(io, roomCode);
         }
+
         const contestStatus = getContestStatus(room.startTime, room.endTime);
-        const usersInRoom = room.participants;
+        const contest = getContestState(roomCode);
+
+        // Enrich database participants with live memory score metrics
+        const usersWithScores = room.participants.map((p) => {
+          const contestData = contest?.participants?.get(p.leetcodeUsername);
+          return {
+            ...(typeof p.toObject === "function" ? p.toObject() : p),
+            totalScore: contestData?.totalScore || 0,
+            solvedProblems: contestData?.solvedProblems
+              ? Object.fromEntries(contestData.solvedProblems)
+              : {},
+            tieBreakerTime: contestData?.tieBreakerTime || 0,
+          };
+        });
+
         io.to(roomCode).emit("room-update", {
-          users: usersInRoom,
+          users: usersWithScores,
           status: contestStatus,
           startTime: room.startTime,
           endTime: room.endTime,
@@ -86,7 +101,7 @@ const setupSocketHandlers = (io) => {
 
     client.on("disconnect", async () => {
       console.log("A user disconnected (retaining room state):", client.id);
-      // 🟢 Room deletion and participant removal logic removed entirely
+      // Room deletion and participant removal logic removed entirely
       // Rooms will stay persistent in the database regardless of user connections.
     });
   });
@@ -101,9 +116,22 @@ const setupSocketHandlers = (io) => {
           await room.save();
 
           console.log(`Room ${room.roomCode} status changed to: ${newStatus}`);
-          const usersInRoom = room.participants;
+
+          const contest = getContestState(room.roomCode);
+          const usersWithScores = room.participants.map((p) => {
+            const contestData = contest?.participants?.get(p.leetcodeUsername);
+            return {
+              ...(typeof p.toObject === "function" ? p.toObject() : p),
+              totalScore: contestData?.totalScore || 0,
+              solvedProblems: contestData?.solvedProblems
+                ? Object.fromEntries(contestData.solvedProblems)
+                : {},
+              tieBreakerTime: contestData?.tieBreakerTime || 0,
+            };
+          });
+
           io.to(room.roomCode).emit("room-update", {
-            users: usersInRoom,
+            users: usersWithScores,
             status: newStatus,
             startTime: room.startTime,
             endTime: room.endTime,
